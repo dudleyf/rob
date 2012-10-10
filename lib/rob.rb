@@ -8,6 +8,9 @@ require 'rob/parser'
 require 'rob/builtins'
 require 'rob/env'
 require 'rob/interpreter'
+require 'rob/bytecode_serializer'
+require 'rob/vm'
+require 'rob/compiler'
 
 module Rob
   def self.parse(str)
@@ -18,6 +21,12 @@ module Rob
     exprs = Parser.new.parse(str)
     interp = Interpreter.new(output)
     exprs.each { |e| interp.interpret(e) }
+  end
+
+  def self.compile(str)
+    parsed_exprs = parse(str)
+    compiled = Compiler.new.compile(parsed_exprs)
+    Assembler.new.assemble(compiled)
   end
 
   def self.repl
